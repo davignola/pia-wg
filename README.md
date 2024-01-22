@@ -49,5 +49,19 @@ sudo wg-quick up wg0
 
 You can shut down the interface with `sudo wg-quick down wg0`
 
+## Command-line Arguments
+
+For headless usage, you can optionally pass the following arguments when running the `generate-config.py` script:
+
+* `--region`: The PIA region. If not provided, you will be prompted to choose a region.
+* `--username`: The PIA username. If not provided, you will be prompted to enter your username.
+* `--password`: The PIA password. If not provided, you will be prompted to enter your password securely.
+* `--output`: The output file path. If not provided, the configuration file will be saved in the current directory.
+
+Here is an example of how to run the script with these arguments:
+
+```bash
+python generate-config.py --region "US East" --username "myusername" --password "mypassword" --output "/path/to/output.conf"
+
 ## Check everything is working
 Visit https://dnsleaktest.com/ to see your new IP and check for DNS leaks.

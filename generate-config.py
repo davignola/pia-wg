@@ -2,6 +2,17 @@ from piawg import piawg
 from pick import pick
 from getpass import getpass
 from datetime import datetime
+import argparse
+
+# Create parser
+parser = argparse.ArgumentParser(description='Generate PIA config.')
+parser.add_argument('--region', type=str, help='PIA region')
+parser.add_argument('--username', type=str, help='PIA username')
+parser.add_argument('--password', type=str, help='PIA password')
+parser.add_argument('--output', type=str, help='Output file path')
+
+# Parse arguments
+args = parser.parse_args()
 
 pia = piawg()
 
@@ -9,16 +20,20 @@ pia = piawg()
 pia.generate_keys()
 
 # Select region
-title = 'Please choose a region: '
-options = sorted(list(pia.server_list.keys()))
-option, index = pick(options, title)
-pia.set_region(option)
-print("Selected '{}'".format(option))
+if args.region:
+    pia.set_region(args.region)
+    print("Selected '{}'".format(args.region))
+else:
+    title = 'Please choose a region: '
+    options = sorted(list(pia.server_list.keys()))
+    option, index = pick(options, title)
+    pia.set_region(option)
+    print("Selected '{}'".format(option))
 
 # Get token
 while True:
-    username = input("\nEnter PIA username: ")
-    password = getpass()
+    username = args.username if args.username else input("\nEnter PIA username: ")
+    password = args.password if args.password else getpass()
     if pia.get_token(username, password):
         print("Login successful!")
         break
@@ -36,7 +51,8 @@ else:
 # Build config
 timestamp = int(datetime.now().timestamp())
 location = pia.region.replace(' ', '-')
-config_file = 'PIA-{}-{}.conf'.format(location, timestamp)
+default_config_file = 'PIA-{}-{}.conf'.format(location, timestamp)
+config_file = args.output if args.output else default_config_file
 print("Saving configuration file {}".format(config_file))
 with open(config_file, 'w') as file:
     file.write('[Interface]\n')
